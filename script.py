@@ -4,7 +4,7 @@ from playwright.async_api import async_playwright, ElementHandle
 async def submit_survey(RollNo, Password,user_rating):
     async with async_playwright() as p:
         # First Form ID
-        forms = '04'
+        forms = '14'
         
         browser = await p.chromium.launch(headless=False)
         page = await browser.new_page()
@@ -27,22 +27,23 @@ async def submit_survey(RollNo, Password,user_rating):
         await asyncio.sleep(2)
 
         # Navigate to the survey Forms
-        await page.goto('http://erp.uit.edu:803/studentportalbeta/survey/2')
+        await page.goto('http://erp.uit.edu:803/StudentPortalBeta/Survey/1')
 
         for i in range(10):
 
             # Wait for the form button to appear and click it
             await page.wait_for_selector('#ctl00_ContentPlaceHolder1_TgridSurvey')
             await page.click(f'#ctl00_ContentPlaceHolder1_TgridSurvey_ctl00_ctl{forms}_RadButton1')
+            forms = '{:01d}'.format(int(forms) + 2)
 
             # Select the rating for each radio button
             while True:
-                if user_rating.isdigit() and 735 <= int(user_rating) <= 1054:
+                if user_rating.isdigit() and 735 <= int(user_rating) <= 779:
                     break
                 else:
-                    print("Invalid input. Please enter a number between 1052 and 1054.")
+                    print("Invalid input. Please enter a number between 735 and 779.")
             radio_count = int(user_rating)
-            for i in range(280, 289):
+            for i in range(201, 210):
                 radio_button = await page.wait_for_selector(f'#rdo{radio_count}')
                 await radio_button.click()
                 radio_count += 5
@@ -85,5 +86,5 @@ async def submit_survey(RollNo, Password,user_rating):
 
 my_rollno = input("Enter your Roll No: ")
 my_password = input("Enter your Password: ")
-user_rating = input("Enter your rating (1052 For 5, 1053 For 4, 1052 For 3): ")
+user_rating = input("Enter your rating (735 For 5, 736 For 4, 737 For 3): ")
 asyncio.run(submit_survey(my_rollno,my_password,user_rating))
